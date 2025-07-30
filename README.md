@@ -1,6 +1,6 @@
 # speedtest-full.sh
 
-Linux
+![demo](image.png)
 
 O speedtest da Ookla (instruções de instalação abaixo) faz um teste de velocidade na sua internet usando um servidor aletório.
 
