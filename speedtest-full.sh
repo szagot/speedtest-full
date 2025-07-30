@@ -34,21 +34,23 @@ if [[ -z "$1" ]]; then
   exit 1
 fi
 
+# Pegando parâmetros de download e upload
 META_DOWNLOAD=$1
 META_UPLOAD=$2
 
-echo -e "${VERMELHO}ATENÇÃO!${RESET} Não execute muitas vezes para evitar bloqueios."
+echo -e "${VERMELHO}⚠ ATENÇÃO!${RESET} Não execute muitas vezes para evitar bloqueios."
 read -p "Se estiver de acordo, pressione ENTER para começar..."
 echo ""
 
 echo -e "${ROXO}Pegando lista de servidores...${RESET}"
 echo ""
 
+# Pegando servdores próximos
 server_output=$(speedtest --servers 2>&1)
 
 if echo "$server_output" | grep -q "Too many requests received"; then
   echo ""
-  echo -e "${VERMELHO}AVISO: o limite de testes foi excedido já na listagem de servidores.${RESET}"
+  echo -e "${VERMELHO}⚠ AVISO: o limite de testes foi excedido já na listagem de servidores. Tente novamente após 1h.${RESET}"
   echo "$server_output" >> "$LOG_FILE"
   echo ""
   exit 1
@@ -76,10 +78,12 @@ while IFS='|' read -r id name; do
   printf "• %s (%s): ${CINZA}Aguarde...${RESET}" "$name" "$id"
   sleep 1
 
+  # Executando teste no servidor atual
   TMP_RESULT="$BASE_DIR/result_$id.txt"
   (speedtest -s "$id" > "$TMP_RESULT" 2>&1) &
   pid=$!
 
+  # spinner
   i=0
   while kill -0 $pid 2>/dev/null; do
     printf "\r• %s (%s): ${CINZA}Executando testes %s  ${RESET}" "$name" "$id" "${spinner_chars[$i]}"
@@ -96,13 +100,13 @@ while IFS='|' read -r id name; do
 
   if echo "$result" | grep -q "Too many requests received"; then
     echo ""
-    echo -e "${VERMELHO}AVISO: o limite de testes foi excedido. Tente novamente daqui pelo menos 1 hora.${RESET}"
+    echo -e "${VERMELHO}⚠ AVISO: o limite de testes foi excedido. Tente novamente daqui pelo menos 1 hora.${RESET}"
     echo "$result" >> "$LOG_FILE"
     break
   fi
 
   if [[ -z "$result" || "$result" != *"Speedtest by Ookla"* ]]; then
-    echo -e "• $name ($id): ${VERMELHO}Falha no teste${RESET}"
+    echo -e "${VERMELHO}⚠${RESET} $name ($id): ${VERMELHO}Falha no teste${RESET}"
     echo "$result" >> "$LOG_FILE"
     continue
   fi
@@ -111,12 +115,13 @@ while IFS='|' read -r id name; do
   echo "$result" > "$TEMP_FILE"
   sed -i 's/\r//' "$TEMP_FILE"
 
+  # Pega os dados do teste
   ping=$(grep -oP 'Idle Latency:\s+\K[0-9.]+' "$TEMP_FILE")
   download=$(grep -m 1 "Download:" "$TEMP_FILE" | awk '{print $2}')
   upload=$(grep -m 1 "Upload:" "$TEMP_FILE" | awk '{print $2}')
 
   if [[ -z "$download" || "$download" == "FAILED" ]]; then
-    echo -e "- $name ($id): ${VERMELHO}Falha no teste${RESET}"
+    echo -e "${VERMELHO}⚠${RESET} $name ($id): ${VERMELHO}Falha no teste${RESET}"
     continue
   fi
 
