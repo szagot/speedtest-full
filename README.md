@@ -17,7 +17,10 @@ Exemplos:
    ./speedtest-full.sh 500
 ```
 
+>**Obs**.: Após baixar o shellscript, não esqueça de torná-lo executável com `chmod +x speedtest-full.sh`.
+
 Se apenas o download for informado, ele vai parar assim que algum servidor atingir a velocidade de download esperada.
+
 Mas se ambos forem informados, download e upload, ele só vai parar o teste se algum servidor atingir ou ultrapassar ambas as velocidades.
 
 ## Instalando speedtest da Ookla
@@ -48,7 +51,7 @@ which speedtest
 speedtest --version
 ```
 
-## Tornndo o script global
+## Tornando o script global
 
 Opcionalmente, caso queira criar um comando global, basta criar um link simbolico em /usr/bin:
 
