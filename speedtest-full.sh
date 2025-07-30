@@ -136,14 +136,14 @@ while IFS='|' read -r id name; do
 
   if [[ -n "$META_UPLOAD" ]]; then
     if (( $(echo "$download >= $META_DOWNLOAD" | bc -l) && $(echo "$upload >= $META_UPLOAD" | bc -l) )); then
-      echo -e "${ROXO}Meta de download e upload atingidas. Encerrando testes.${RESET}"
       echo ""
+      echo -e "${ROXO}Meta de download e upload atingidas. Encerrando testes.${RESET}"
       break
     fi
   else
     if (( $(echo "$download >= $META_DOWNLOAD" | bc -l) )); then
-      echo -e "${ROXO}Meta de download atingida. Encerrando testes.${RESET}"
       echo ""
+      echo -e "${ROXO}Meta de download atingida. Encerrando testes.${RESET}"
       break
     fi
   fi
